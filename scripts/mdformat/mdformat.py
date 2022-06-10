@@ -24,7 +24,8 @@ def _classify_line(line: str):
         return LineType.BLANK
     elif regex.match(line):
         return LineType.DATE
-    elif line.startswith("*"):
+    elif line.startswith("* "):
+        # dot point content in the document
         return LineType.DATA
 
     return LineType.TEXT
