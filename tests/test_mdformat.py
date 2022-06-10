@@ -68,6 +68,9 @@ Here is some general text content where the next blank should be preserved.
 
 More text.
     Indented content.
+
+
+Content 2 lines after
 """
 
 
@@ -84,6 +87,9 @@ Here is some general text content where the next blank should be preserved.
 
 More text.
     Indented content.
+
+
+Content 2 lines after
 """
 
 
