@@ -24,7 +24,7 @@ def _classify_line(line: str):
         return LineType.BLANK
     elif regex.match(line):
         return LineType.DATE
-    elif line.startswith("* "):
+    elif line.startswith("* ") or line == "*" or line == "*\n":
         # dot point content in the document
         return LineType.DATA
 
@@ -41,7 +41,7 @@ def format_markdown(lines):
 
     while lookahead:
         last_line_type = current_type
-        current = next(lookahead).strip()
+        current = next(lookahead).rstrip()  # rstrip to preserve indent
         current_type = _classify_line(current)
 
         if lookahead:
@@ -61,6 +61,9 @@ def format_markdown(lines):
             # retain blank line between last dot point and new title entries
             yield current
         elif current_type == LineType.BLANK and peeked_type == LineType.BLANK:
+            # maintain multiple line breaks
+            yield current
+        elif current_type == LineType.BLANK and peeked_type == LineType.TEXT:
             # maintain multiple line breaks
             yield current
         elif peeked_type and current_type in (LineType.DATA, LineType.DATE, LineType.TEXT):

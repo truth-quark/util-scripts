@@ -63,6 +63,11 @@ MD_HEADER_PRE_FORMAT_CONTENT = """**Notes 2022**
 * 
 
 *
+
+Here is some general text content where the next blank should be preserved.
+
+More text.
+    Indented content.
 """
 
 
@@ -74,6 +79,11 @@ MD_HEADER_POST_FORMAT_CONTENT = """**Notes 2022**
 * Notes line 2
 *
 *
+
+Here is some general text content where the next blank should be preserved.
+
+More text.
+    Indented content.
 """
 
 
