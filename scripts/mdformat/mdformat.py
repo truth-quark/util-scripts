@@ -33,7 +33,7 @@ def _classify_line(line: str):
 
 def format_markdown(lines):
     lookahead = peekable(lines)
-    current = next(lookahead)
+    current = next(lookahead).rstrip()
     current_type = _classify_line(current)
 
     assert current_type == LineType.TEXT
@@ -41,35 +41,23 @@ def format_markdown(lines):
 
     while lookahead:
         last_line_type = current_type
-        current = next(lookahead).rstrip()  # rstrip to preserve indent
+        current = next(lookahead).rstrip()  # using rstrip preserves indent
         current_type = _classify_line(current)
 
         if lookahead:
             peeked = lookahead.peek()
             peeked_type = _classify_line(peeked)
         else:
-            # Handle last line
-            peeked_type = None
+            # flag being the last line
+            peeked = peeked_type = None
 
-        if current_type == LineType.BLANK and last_line_type == LineType.DATE and peeked_type == LineType.DATA:
-            # retain blank line between the date/title & first dot point
-            yield current
-        elif current_type == LineType.BLANK and last_line_type == LineType.DATA and peeked_type == LineType.DATA:
+        if current_type == LineType.BLANK and last_line_type == LineType.DATA and peeked_type == LineType.DATA:
             # remove blank line between dot points
             continue
-        elif current_type == LineType.BLANK and last_line_type == LineType.DATA and peeked_type == LineType.DATE:
-            # retain blank line between last dot point and new title entries
-            yield current
-        elif current_type == LineType.BLANK and peeked_type == LineType.BLANK:
-            # maintain multiple line breaks
-            yield current
-        elif current_type == LineType.BLANK and peeked_type == LineType.TEXT:
-            # maintain multiple line breaks
-            yield current
-        elif peeked_type and current_type in (LineType.DATA, LineType.DATE, LineType.TEXT):
-            yield current
         elif peeked_type is None:
-            yield f"{current}\n"  # final newline needs to be inline to avoid join() adding extra "\n"
+            yield f"{current}\n"  # final inline newline avoids join() adding extra "\n"
+        else:
+            yield current
 
 
 if __name__ == "__main__":
