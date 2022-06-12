@@ -14,18 +14,23 @@ class LineType(Enum):
     DATE = "date"
     BLANK = "blank"
     TEXT = "text"
+    HEADER = "header"
 
 
 RE_DATE_PATTERN = r"\d{1,2}/\d{1,2}/\d{4}"
-regex = re.compile(RE_DATE_PATTERN)
+date_regex = re.compile(RE_DATE_PATTERN)
+
+RE_HEADER_PATTERN = r"#{1,4} "
+header_regex = re.compile(RE_HEADER_PATTERN)
 
 
-# TODO: does not handle leading hashes for heading lines
 def _classify_line(line: str):
     if line == '' or line.isspace():
         return LineType.BLANK
-    elif regex.match(line):
+    elif date_regex.match(line):
         return LineType.DATE
+    elif header_regex.match(line):
+        return LineType.HEADER
     elif line.startswith("* ") or line == "*" or line == "*\n":
         # dot point content in the document
         return LineType.DATA
@@ -38,7 +43,7 @@ def format_markdown(lines):
     current = next(lookahead).rstrip()
     current_type = _classify_line(current)
 
-    assert current_type == LineType.TEXT
+    assert current_type in (LineType.TEXT, LineType.HEADER)
     yield current
 
     while lookahead:
@@ -55,6 +60,9 @@ def format_markdown(lines):
 
         if current_type == LineType.BLANK and last_line_type == LineType.DATA and peeked_type == LineType.DATA:
             # remove blank line between dot points
+            continue
+        elif current_type == LineType.BLANK and peeked_type == LineType.BLANK:
+            # remove duplicate newlines (simplify document in addition to newline removal in markdown render)
             continue
         elif peeked_type is None:
             yield f"{current}\n"  # final inline newline avoids join() adding extra "\n"
