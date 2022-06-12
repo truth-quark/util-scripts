@@ -1,9 +1,10 @@
 """
-Quick and dirty script to reformat markdown files from "Docs to Markdown" extension in Google docs.
+Quick and dirty script to reformat markdown files from 'Docs to Markdown' extension in Google docs.
 """
 
 import re
 import sys
+from pathlib import Path
 from enum import Enum
 from more_itertools import peekable
 
@@ -19,6 +20,7 @@ RE_DATE_PATTERN = r"\d{1,2}/\d{1,2}/\d{4}"
 regex = re.compile(RE_DATE_PATTERN)
 
 
+# TODO: does not handle leading hashes for heading lines
 def _classify_line(line: str):
     if line == '' or line.isspace():
         return LineType.BLANK
@@ -61,7 +63,15 @@ def format_markdown(lines):
 
 
 if __name__ == "__main__":
-    path = sys.argv[1]
+    usage = "mdformat.py [input_file]\nOR\nmdformat.py [input_file] > <output_file>  # redirect to file"
+
+    try:
+        path = Path(sys.argv[1])
+    except IndexError:
+        raise SystemExit(usage)
+
+    if not path.exists():
+        raise SystemExit(f"File: {path} does not exist")
 
     with open(path) as f:
         for _line in format_markdown(f):
