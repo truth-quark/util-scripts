@@ -42,27 +42,30 @@ def format_markdown(lines):
     lookahead = peekable(lines)
     current = next(lookahead).rstrip()
     current_type = _classify_line(current)
+    last_line_type = None
+    line_dropped = False
 
     assert current_type in (LineType.TEXT, LineType.HEADER)
     yield current
 
     while lookahead:
-        last_line_type = current_type
-        current = next(lookahead).rstrip()  # using rstrip preserves indent
-        current_type = _classify_line(current)
-
-        if lookahead:
-            peeked = lookahead.peek()
-            peeked_type = _classify_line(peeked)
+        if not line_dropped:
+            last_line_type = current_type
         else:
-            # flag being the last line
-            peeked = peeked_type = None
+            # retain last line data as last processed line was dropped
+            line_dropped = False
 
-        if current_type == LineType.BLANK and last_line_type == LineType.DATA and peeked_type == LineType.DATA:
-            # remove blank line between dot points
+        current = next(lookahead).rstrip()  # preserve indent with rstrip
+        current_type = _classify_line(current)
+        peeked_type = _classify_line(lookahead.peek()) if lookahead else None
+
+        if current_type is LineType.BLANK and last_line_type is LineType.DATA and peeked_type is LineType.DATA:
+            # drop blank line between dot points
+            line_dropped = True
             continue
-        elif current_type == LineType.BLANK and peeked_type == LineType.BLANK:
-            # remove duplicate newlines (simplify document in addition to newline removal in markdown render)
+        elif current_type is LineType.BLANK and peeked_type is LineType.BLANK:
+            # drop duplicate newlines (simplify document in addition to newline removal in markdown render)
+            line_dropped = True
             continue
         elif peeked_type is None:
             yield f"{current}\n"  # final inline newline avoids join() adding extra "\n"

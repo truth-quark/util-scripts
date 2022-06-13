@@ -20,11 +20,13 @@ MD_PRE_FORMAT_CONTENT = """Notes 2022
 
 * Notes line 3
 
+
 1/6/2022
 
 * Notes line 1
 
 * Notes line 2
+
 
 * Notes line 3
 """
