@@ -71,8 +71,11 @@ def tag_file(path: pathlib.Path, track: int, title: str, album: str, artist: str
     if DEBUG:
         print(cmd)
 
-    # TODO: replace with popen
-    os.system(cmd)
+    res = subprocess.run(cmd, shell=True)
+
+    if res.returncode:
+        err = f"Failed to exec: {cmd}"
+        print(err)
 
 
 class TagError(Exception):
