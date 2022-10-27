@@ -41,6 +41,9 @@ class mp3tag_error(Exception):
 
 
 if __name__ == "__main__":
-    usage = "mp3tag [artist name] [album_dir]"
-    _artist, _dir = sys.argv[1:]
-    tag_files(pathlib.Path(_dir), _artist)
+    usage = "mp3tag [artist name] [album_dir(s)]"
+    _artist = sys.argv[1]
+    _dirs = sys.argv[2:]
+
+    for d in _dirs:
+        tag_files(pathlib.Path(d), _artist)
