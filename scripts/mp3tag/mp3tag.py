@@ -1,7 +1,16 @@
 import os
+import re
 import sys
 import glob
 import pathlib
+
+
+# TODO: check for installed id3 tag utils?
+
+NUMBERED_ALBUM_PATTERN = r"^[0-9]{2} "
+pattern = re.compile(NUMBERED_ALBUM_PATTERN)
+
+DEBUG = "DEBUG" in os.environ
 
 
 def tag_files(dir_path: pathlib.Path, artist: str):
@@ -16,11 +25,22 @@ def tag_files(dir_path: pathlib.Path, artist: str):
     file_paths = [pathlib.Path(p) for p in glob.glob(search_str)]
 
     if len(file_paths) == 0:
-        raise mp3tag_error(f"No files found in {dir_path}")
+        raise TagError(f"No files found in {dir_path}")
+
+    album = dir_path.name
+
+    if DEBUG:
+        print(f"Album title {album}")
+
+    m = pattern.match(album)
+
+    if m:
+        # strip off album numbering prefix
+        album = album[3:]
 
     for path in file_paths:
         track, title = parse_file_path(path)
-        tag_file(path, track, title, album=dir_path.stem, artist=artist)
+        tag_file(path, track, title, album, artist)
 
 
 def parse_file_path(path: pathlib.Path):
@@ -36,7 +56,7 @@ def tag_file(path: pathlib.Path, track: int, title: str, album: str, artist: str
     os.system(cmd)
 
 
-class mp3tag_error(Exception):
+class TagError(Exception):
     pass
 
 
