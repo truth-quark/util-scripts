@@ -46,13 +46,22 @@ def tag_files(dir_path: pathlib.Path, artist: str):
 def parse_file_path(path: pathlib.Path):
     assert path.is_file()
     base = path.stem
-    track = int(base[:2])
+    track = int(base[:2])  # TODO: make more robust with regex
     title = base[3:]
-    return track, title
+
+    if title.startswith("- "):
+        title = title[2:]
+
+    return track, title.strip()
 
 
 def tag_file(path: pathlib.Path, track: int, title: str, album: str, artist: str):
-    cmd = f"id3tool -c {track} -t '{title}' -a '{album}' -r '{artist}' '{path}'"
+    cmd = f"""id3tool -c {track} -t "{title}" -a '{album}' -r '{artist}' "{path}" """
+
+    if DEBUG:
+        print(cmd)
+
+    # TODO: replace with popen
     os.system(cmd)
 
 
