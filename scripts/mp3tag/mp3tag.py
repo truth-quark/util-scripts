@@ -3,9 +3,19 @@ import re
 import sys
 import glob
 import pathlib
+import subprocess
 
 
-# TODO: check for installed id3 tag utils?
+# check for installed id3 tag utils
+# TODO: replace with a python dep?
+MP3_UTILS = ("id3tool", )
+_results = [subprocess.run(["which", util]) for util in MP3_UTILS]
+_installed = [proc for proc in _results if proc.returncode == 0]
+
+if not _installed:
+    msg = f"No id3 tagging tools installed: {', '.join(MP3_UTILS)}"
+    raise SystemExit(msg)
+
 
 NUMBERED_ALBUM_PATTERN = r"^[0-9]{2} "
 pattern = re.compile(NUMBERED_ALBUM_PATTERN)
