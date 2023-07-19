@@ -4,7 +4,9 @@ import sys
 import glob
 import pathlib
 import subprocess
+import warnings
 
+# TODO: add option for title only/title+artist when no track # exists
 
 # check for installed id3 tag utils
 # TODO: replace with a python dep?
@@ -19,6 +21,10 @@ if not _installed:
 
 NUMBERED_ALBUM_PATTERN = r"^[0-9]{2} "
 pattern = re.compile(NUMBERED_ALBUM_PATTERN)
+
+TRACK_NUMBERING_PATTERN = r"^[0-9]{1,3}"
+track_pattern = re.compile(TRACK_NUMBERING_PATTERN)
+
 
 DEBUG = "DEBUG" in os.environ
 
@@ -56,8 +62,17 @@ def tag_files(dir_path: pathlib.Path, artist: str):
 def parse_file_path(path: pathlib.Path):
     assert path.is_file()
     base = path.stem
-    track = int(base[:2])  # TODO: make more robust with regex
-    title = base[3:]
+
+    m = track_pattern.match(base)
+
+    if m:
+        track = int(m[0])
+        track_len = len(m[0])
+    else:
+        warnings.warn(f"No track number found for '{base}'")
+        return base  # TODO: does this work?
+
+    title = base[track_len+1:]
 
     if title.startswith("- "):
         title = title[2:]
