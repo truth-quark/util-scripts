@@ -8,6 +8,8 @@ import warnings
 import argparse
 
 # TODO: add option for title only/title+artist when no track # exists
+# TODO: strip common head/tail of title strings? (e.g. get rid of leading artist name)
+#       e.g. "Tool - H." --> "H."
 
 # check for installed id3 tag utils
 # TODO: replace with a python dep?
