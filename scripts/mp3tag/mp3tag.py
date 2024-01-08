@@ -37,6 +37,7 @@ def tag_files(dir_path: pathlib.Path, artist: str):
     :param artist: band name
     :return:
     """
+    # TODO: expand searches to include all media supporting id3 tags
     search_str = f"{dir_path}/*.mp3"
     file_paths = [pathlib.Path(p) for p in glob.glob(search_str)]
 
@@ -46,7 +47,7 @@ def tag_files(dir_path: pathlib.Path, artist: str):
     album = dir_path.name
 
     if DEBUG:
-        print(f"Album title {album}")
+        print(f"DEBUG: Album title '{album}'")
 
     m = pattern.match(album)
 
@@ -84,7 +85,7 @@ def tag_file(path: pathlib.Path, track: int, title: str, album: str, artist: str
     cmd = f"""id3tool -c {track} -t "{title}" -a '{album}' -r '{artist}' "{path}" """
 
     if DEBUG:
-        print(cmd)
+        print("DEBUG:", cmd)
 
     res = subprocess.run(cmd, shell=True)
 
