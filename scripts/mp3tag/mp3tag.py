@@ -42,6 +42,7 @@ def tag_files(dir_path: pathlib.Path, artist: str):
     :return:
     """
     # TODO: expand searches to include all media supporting id3 tags
+    # TODO: configure with a resources file?
     search_str = f"{dir_path}/*.mp3"
     file_paths = [pathlib.Path(p) for p in glob.glob(search_str)]
 
@@ -53,9 +54,7 @@ def tag_files(dir_path: pathlib.Path, artist: str):
     if DEBUG:
         print(f"DEBUG: Album title '{album}'")
 
-    m = pattern.match(album)
-
-    if m:
+    if m := pattern.match(album):
         # strip off album numbering prefix
         album = album[3:]
 
@@ -68,9 +67,7 @@ def parse_file_path(path: pathlib.Path):
     assert path.is_file()
     base = path.stem
 
-    m = track_pattern.match(base)
-
-    if m:
+    if m := track_pattern.match(base):
         track = int(m[0])
         track_len = len(m[0])
     else:
