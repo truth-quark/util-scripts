@@ -29,6 +29,7 @@ TRACK_NUMBERING_PATTERN = r"^[0-9]{1,3}"
 track_pattern = re.compile(TRACK_NUMBERING_PATTERN)
 
 ARTIST_NAME = "artist-name"
+ALBUM_TITLE = "album_title"  # NB: underscore as optional arg
 FILES_OR_DIRS = "files-or-dirs"
 DEBUG = "DEBUG" in os.environ
 
@@ -97,7 +98,11 @@ def tag_file(path: pathlib.Path, track: int, title: str, album: str, artist: str
 
 def tag_title_only(path: pathlib.Path, title: str, album: str, artist: str):
     # TODO: check/strip leading numbering from files for title
-    cmd = f"""id3tool -t "{title}" -r '{artist}' "{path}" """
+    if album:
+        cmd = f"""id3tool -t "{title}" -r '{artist}' -a '{album}' "{path}" """
+    else:
+        cmd = f"""id3tool -t "{title}" -r '{artist}' "{path}" """
+
     res = subprocess.run(cmd, shell=True)
 
     if DEBUG:
@@ -115,6 +120,7 @@ class TagError(Exception):
 if __name__ == "__main__":
     # usage = "mp3tag [artist name] [file(s) or album_dir(s)]"
     parser = argparse.ArgumentParser(description="Update tags for batches of MP3 files")
+    parser.add_argument("-t", "--album-title", help="Album title")
     parser.add_argument(ARTIST_NAME, help="Artist/band name")
     parser.add_argument(FILES_OR_DIRS,
                         type=str,
@@ -131,5 +137,5 @@ if __name__ == "__main__":
         else:
             tag_title_only(pathlib.Path(d),
                            os.path.basename(d),
-                           "-",  # no album
+                           args[ALBUM_TITLE],  # default is None
                            args[ARTIST_NAME])
