@@ -33,6 +33,10 @@ ALBUM_TITLE = "album_title"  # NB: underscore as optional arg
 FILES_OR_DIRS = "files-or-dirs"
 DEBUG = "DEBUG" in os.environ
 
+TITLE = "title"
+ALBUM = "album"
+ARTIST = "artist"
+
 
 def tag_files(dir_path: pathlib.Path, artist: str):
     """
@@ -98,10 +102,17 @@ def tag_file(path: pathlib.Path, track: int, title: str, album: str, artist: str
 
 def tag_title_only(path: pathlib.Path, title: str, album: str, artist: str):
     # TODO: check/strip leading numbering from files for title
-    if album:
-        cmd = f"""id3tool -t "{title}" -r '{artist}' -a '{album}' "{path}" """
-    else:
-        cmd = f"""id3tool -t "{title}" -r '{artist}' "{path}" """
+    # TODO: parse path into (track num, song name) OR (None, song name)
+    # TODO: create generic cmd creator to add flags for non-None options
+    #       individual files won't have a track arg
+
+    # FIXME: id3tool specific!
+    opts = [(flag, arg) for k, arg, flag in ((TITLE, title, "-t"),
+                                             (ALBUM, album, "-a"),
+                                             (ARTIST, artist, "-r")) if arg]
+
+    quoted_opts = [" ".join((flag, f"'{arg}'")) for flag, arg in opts]
+    cmd = f"""id3tool {' '.join(quoted_opts)}  "{path}" """
 
     res = subprocess.run(cmd, shell=True)
 
