@@ -8,9 +8,6 @@ import argparse
 
 
 def is_empty(dirpath, dirnames, filenames):
-    if dirpath.endswith(("/.git", "/.hg")):
-        return False
-
     return not bool(filenames or dirnames)
 
 
@@ -28,12 +25,16 @@ def create_parser():
     return parser
 
 
-def empty_dirs(directories):
+def empty_dirs(directories, skip_vcs=True):
     """
     Recursively search the provided directory paths, yielding empty paths.
     """
     for d in directories:
         for dirpath, dirnames, filenames in os.walk(d):
+            if skip_vcs:
+                if ".git" in dirpath or ".hg"  in dirpath:
+                    continue
+
             if is_empty(dirpath, dirnames, filenames):
                 yield f"{dirpath}"
 
