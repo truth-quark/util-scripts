@@ -1,3 +1,7 @@
+"""
+Utility to search file trees for empty directories.
+"""
+
 import os
 import sys
 import argparse
@@ -7,12 +11,12 @@ def is_empty(dirpath, dirnames, filenames):
     if dirpath.endswith(("/.git", "/.hg")):
         return False
 
-    return not bool(filenames or dirnames)  # not empty
+    return not bool(filenames or dirnames)
 
 
 def create_parser():
     # TODO: add arg to search version control dirs
-    desc = "Search file trees for empty dirs."
+    desc = "Search file trees for empty directories."
     parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument("dirs",
