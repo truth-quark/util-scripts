@@ -28,11 +28,19 @@ def create_parser():
     return parser
 
 
+def empty_dirs(directories):
+    """
+    Recursively search the provided directory paths, yielding empty paths.
+    """
+    for d in directories:
+        for dirpath, dirnames, filenames in os.walk(d):
+            if is_empty(dirpath, dirnames, filenames):
+                yield f"{dirpath}"
+
+
 if __name__ == "__main__":
     parser = create_parser()
     args = parser.parse_args()
 
-    for root in args.dirs:
-        for dirpath, dirnames, filenames in os.walk(root):
-            if is_empty(dirpath, dirnames, filenames):
-                print(f"{dirpath}")
+    for d in empty_dirs(args.dirs):
+        print(d)
