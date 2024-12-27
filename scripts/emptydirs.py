@@ -21,7 +21,7 @@ def create_parser():
 
     parser.add_argument("dirs",
                         type=str,
-                        nargs="?",
+                        nargs="*",
                         metavar="F",
                         default=[os.getcwd()],
                         help="Directories to search recursively.")
