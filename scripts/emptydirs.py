@@ -9,10 +9,7 @@ def is_included(dirpath, dirnames, filenames):
     if dirpath.endswith(("/.git", "/.hg")):
         return False
 
-    if filenames or dirnames:  # not empty
-        return False
-        
-    return True
+    return not bool(filenames or dirnames)  # not empty
 
 
 for root in args:
