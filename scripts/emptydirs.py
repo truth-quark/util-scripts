@@ -16,6 +16,10 @@ def create_parser():
     desc = "Search file trees for empty directories."
     parser = argparse.ArgumentParser(description=desc)
 
+    parser.add_argument("-s", "--show-vcs",
+                        action='store_true',
+                        help='Recurse into version control directories.')
+
     parser.add_argument("dirs",
                         type=str,
                         nargs="*",
@@ -43,5 +47,5 @@ if __name__ == "__main__":
     parser = create_parser()
     args = parser.parse_args()
 
-    for d in empty_dirs(args.dirs):
+    for d in empty_dirs(args.dirs, not args.show_vcs):
         print(d)
