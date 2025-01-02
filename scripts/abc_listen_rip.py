@@ -13,6 +13,13 @@ patterns = [r"https://mediacore-live-production.akamaized.net/audio/../../Z/..[.
 
 title_pattern = r"<title>(?P<title>.+)</title>"
 
+def extract_media_path(re_patterns, text):
+    # TODO: refactor to find a media path or handle no match
+    for pattern in re_patterns:
+        if match := re.search(pattern, text):
+            return match.group()
+
+
 for url in urls:
     r = requests.get(url)
 
@@ -30,11 +37,9 @@ for url in urls:
         continue
 
     # TODO: refactor to find a media path or handle no match
-    for pattern in patterns:
-        if match := re.search(pattern, r.text):
-            m_url = match.group()
-            cmd = f"""wget {m_url} -O "{title}.mp3" """
-            os.system(cmd)  # TODO: replace with subprocess
-        else:
-            print(f"No media URL found in {url}")
-            continue
+    if media_path := extract_media_path(patterns, r.text):
+        cmd = f"""wget {media_path} -O "{title}.mp3" """
+        os.system(cmd)  # TODO: replace with subprocess
+    else:
+        print(f"No media URL found in {url}")
+        continue
