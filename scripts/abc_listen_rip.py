@@ -13,15 +13,13 @@ for url in urls:
     if r.status_code != 200:
         sys.exit(r.status_code)
 
-    title = None
-
     if match_title := re.search(title_pattern, r.text):
         raw_title = match_title.group(1)
         title, _, _ = raw_title.partition(" - ")
         print(f"title={title}")
-
-    if title is None:
-        sys.exit("No title found")
+    else:
+        print(f"No title found in HTML, skipping {url}")
+        continue
 
     if match := re.search(pattern, r.text):
         #print(match)
