@@ -11,7 +11,9 @@ for url in urls:
     r = requests.get(url)
 
     if r.status_code != 200:
-        sys.exit(r.status_code)
+        msg = f"HTTP {r.status_code} for {url}"
+        print(msg)
+        continue
 
     if match_title := re.search(title_pattern, r.text):
         raw_title = match_title.group(1)
