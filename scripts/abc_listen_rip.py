@@ -24,10 +24,9 @@ for url in urls:
         continue
 
     if match := re.search(pattern, r.text):
-        #print(match)
         m_url = match.group()
-        print(f"url={m_url}")
-
-    cmd = f"""wget {m_url} -O "{title}.mp3" """
-    # print(f"dl cmd: {cmd}")
-    os.system(cmd)
+        cmd = f"""wget {m_url} -O "{title}.mp3" """
+        os.system(cmd)  # TODO: replace with subprocess
+    else:
+        print(f"No media URL found in {url}")
+        continue
