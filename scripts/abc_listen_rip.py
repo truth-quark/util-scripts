@@ -1,6 +1,6 @@
-import os
 import re
 import sys
+import subprocess
 import requests
 
 
@@ -37,10 +37,10 @@ for url in urls:
         print(f"No title found in HTML, skipping {url}")
         continue
 
-    # TODO: refactor to find a media path or handle no match
+    # download step
     if media_path := extract_media_path(patterns, r.text):
-        cmd = f"""wget {media_path} -O "{title}.mp3" """
-        os.system(cmd)  # TODO: replace with subprocess
+        cmd = ["wget", media_path, "-O", f"{title}.mp3"]
+        subprocess.run(cmd)
     else:
         print(f"No media URL found in {url}")
         continue
