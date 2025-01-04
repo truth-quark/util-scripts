@@ -3,6 +3,7 @@ import re
 import sys
 import requests
 
+
 urls = sys.argv[1:]
 
 # Media file patterns can be:
@@ -13,8 +14,8 @@ patterns = [r"https://mediacore-live-production.akamaized.net/audio/../../Z/..[.
 
 title_pattern = r"<title>(?P<title>.+)</title>"
 
+
 def extract_media_path(re_patterns, text):
-    # TODO: refactor to find a media path or handle no match
     for pattern in re_patterns:
         if match := re.search(pattern, text):
             return match.group()
