@@ -10,15 +10,14 @@ import feedparser
 def entry(e):
     timestamp = get_timestamp(e)
 
-    url = None
     try:
-        url = e.links[0].href
+        raw_url = e.links[0].href
     except AttributeError as ex:
-        pass
+        # TODO: what RSS does this code work with?
+        raw_url = e.media_content[0]["url"]
 
-    if url is None:
-        url = e.media_content[0]["url"].partition("?")[0]
-
+    # TODO: possibly add better error handling
+    url = raw_url.partition("?")[0]  # trim tracking args
     return f"wget {url} -O '{timestamp}-{e.title}.mp3'"
 
 
