@@ -5,10 +5,6 @@ import feedparser
 # TODO: add funcs to generate different types of download scripts
 #       wget, requests, yt-dlp???
 
-url = sys.argv[1]
-feed = feedparser.parse(url)
-entries = feed.entries
-
 
 # TODO: refactor, only extract data with this func
 def entry(e):
@@ -27,5 +23,11 @@ def entry(e):
     return f"wget {url} -O '{d.year}{str(d.month).zfill(2)}{str(d.day).zfill(2)}-{e.title}.mp3'"
 
 
-for ent in entries:
-    print(entry(ent))
+if __name__ == "__main__":
+    # TODO: assume only 1 URL required
+    url = sys.argv[1]
+    feed = feedparser.parse(url)
+    entries = feed.entries
+
+    for ent in entries:
+        print(entry(ent))
