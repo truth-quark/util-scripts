@@ -45,15 +45,7 @@ def format_entry(e):
 
 def get_timestamp(entry):
     d = datetime.datetime(*entry.published_parsed[:7])
-    year = d.year
-
-    # add leading zeros as numerical f string formatting doesn't allow this
-    month = str(d.month).zfill(2)
-    day = str(d.day).zfill(2)
-    hour = str(d.hour).zfill(2)
-    minute = str(d.minute).zfill(2)
-
-    return f"{year}{month}{day}-{hour}{minute}"
+    return d.strftime("%Y%m%d-%H%M")
 
 
 if __name__ == "__main__":
