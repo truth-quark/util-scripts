@@ -1,9 +1,13 @@
 import sys
 import datetime
+import warnings
+
 import feedparser
 
 # TODO: add funcs to generate different types of download scripts
 #       wget, requests, yt-dlp???
+
+MEDIA_TYPES = ("audio/mpeg", )
 
 
 # TODO: refactor, only extract data with this func
@@ -15,6 +19,12 @@ def format_entry(e):
     except AttributeError as ex:
         # TODO: what RSS does this code work with?
         raw_url = e.media_content[0]["url"]
+
+    media_type = e.links[0].type
+
+    if media_type not in MEDIA_TYPES:
+        msg = "Warning: media type '{media type}' not in {MEDIA_TYPES}"
+        warnings.warn(msg)
 
     # TODO: possibly add better error handling
     url = raw_url.partition("?")[0]  # trim tracking args
