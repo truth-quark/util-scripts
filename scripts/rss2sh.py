@@ -7,7 +7,7 @@ import feedparser
 
 
 # TODO: refactor, only extract data with this func
-def entry(e):
+def format_entry(e):
     timestamp = get_timestamp(e)
 
     try:
@@ -41,4 +41,4 @@ if __name__ == "__main__":
     entries = feed.entries
 
     for ent in entries:
-        print(entry(ent))
+        print(format_entry(ent))
