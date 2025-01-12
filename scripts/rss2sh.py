@@ -10,9 +10,13 @@ import feedparser
 MEDIA_TYPES = ("audio/mpeg", )
 
 
-# TODO: refactor, only extract data with this func
 def format_entry(e):
     timestamp = get_timestamp(e)
+    media_type = e.links[0].type
+
+    if media_type not in MEDIA_TYPES:
+        msg = "Warning: media type '{media type}' not in {MEDIA_TYPES}"
+        warnings.warn(msg)
 
     try:
         raw_url = e.links[0].href
@@ -20,11 +24,6 @@ def format_entry(e):
         # TODO: what RSS does this code work with?
         raw_url = e.media_content[0]["url"]
 
-    media_type = e.links[0].type
-
-    if media_type not in MEDIA_TYPES:
-        msg = "Warning: media type '{media type}' not in {MEDIA_TYPES}"
-        warnings.warn(msg)
 
     # TODO: possibly add better error handling
     url = raw_url.partition("?")[0]  # trim tracking args
@@ -48,7 +47,6 @@ if __name__ == "__main__":
     # TODO: assume only 1 URL required
     url = sys.argv[1]
     feed = feedparser.parse(url)
-    entries = feed.entries
 
-    for ent in entries:
+    for ent in feed.entries:
         print(format_entry(ent))
