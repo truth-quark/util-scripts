@@ -3,6 +3,10 @@ import sys
 import subprocess
 import requests
 
+# TODO: use argparse?
+# TODO: should the HTML be saved & cached? Does a lib exist for this?
+# TODO: add option to create wget script?
+
 
 urls = sys.argv[1:]
 
