@@ -44,14 +44,17 @@ def extract_url(e):
     return raw_url
 
 
-def format_entry(e, raw_url):
-    """
-    Formats & returns a wget download command.
-    """
-    timestamp = get_timestamp(e)
-
+def clean_url(raw_url):
     # TODO: make arg trimming optional
     url = raw_url.partition("?")[0]  # trim tracking args
+    return url
+
+
+def format_entry(e, url):
+    """
+    Returns a formatted 'wget' download command string.
+    """
+    timestamp = get_timestamp(e)
     return f"wget {url} -O '{timestamp}-{e.title}.mp3'"
 
 
