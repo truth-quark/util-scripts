@@ -21,12 +21,11 @@ import feedparser
 MEDIA_TYPES = ("audio/mpeg", )
 
 
-def format_entry(e):
+def extract_url(e):
     """
-    Extracts entry data, formats & returns a wget download command.
+    Extracts URL from RSS entry data.
     """
-    timestamp = get_timestamp(e)
-
+    # ".links" is usually a pair of dicts, one with correct media type & a URL
     for item in e.links:
         raw_url = item.href
         media_type = item.type
@@ -35,13 +34,23 @@ def format_entry(e):
             msg = "Warning: media type '{media type}' not in {MEDIA_TYPES}"
             warnings.warn(msg)
 
+        # TODO: possibly add better error handling
         if ".mp3" in raw_url:
             break
         else:
             msg = f"Warning: no '.mp3' in media URL not in {raw_url}"
             warnings.warn(msg)
 
-    # TODO: possibly add better error handling
+    return raw_url
+
+
+def format_entry(e, raw_url):
+    """
+    Formats & returns a wget download command.
+    """
+    timestamp = get_timestamp(e)
+
+    # TODO: make arg trimming optional
     url = raw_url.partition("?")[0]  # trim tracking args
     return f"wget {url} -O '{timestamp}-{e.title}.mp3'"
 
@@ -57,4 +66,5 @@ if __name__ == "__main__":
     feed = feedparser.parse(url)
 
     for ent in feed.entries:
-        print(format_entry(ent))
+        raw_url = extract_url(ent)
+        print(format_entry(ent, raw_url))
