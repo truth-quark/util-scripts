@@ -26,17 +26,20 @@ def format_entry(e):
     Extracts entry data, formats & returns a wget download command.
     """
     timestamp = get_timestamp(e)
-    media_type = e.links[0].type
 
-    if media_type not in MEDIA_TYPES:
-        msg = "Warning: media type '{media type}' not in {MEDIA_TYPES}"
-        warnings.warn(msg)
+    for item in e.links:
+        raw_url = item.href
+        media_type = item.type
 
-    try:
-        raw_url = e.links[0].href
-    except AttributeError as ex:
-        # TODO: what RSS does this code work with?
-        raw_url = e.media_content[0]["url"]
+        if media_type not in MEDIA_TYPES:
+            msg = "Warning: media type '{media type}' not in {MEDIA_TYPES}"
+            warnings.warn(msg)
+
+        if ".mp3" in raw_url:
+            break
+        else:
+            msg = f"Warning: no '.mp3' in media URL not in {raw_url}"
+            warnings.warn(msg)
 
     # TODO: possibly add better error handling
     url = raw_url.partition("?")[0]  # trim tracking args
