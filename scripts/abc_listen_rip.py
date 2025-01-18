@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 import subprocess
@@ -16,6 +17,10 @@ patterns = [r"https://mediacore-live-production.akamaized.net/audio/../../Z/..[.
 title_pattern = r"<title>(?P<title>.+)</title>"
 
 
+USER_AGENT_KEY = "USER_AGENT"
+USER_AGENT = os.environ.get(USER_AGENT_KEY)
+
+
 def extract_media_path(re_patterns, text):
     for pattern in re_patterns:
         if match := re.search(pattern, text):
@@ -24,9 +29,10 @@ def extract_media_path(re_patterns, text):
 
 def main():
     urls = sys.argv[1:]
+    headers = {'user-agent': USER_AGENT} if USER_AGENT else None
 
     for url in urls:
-        r = requests.get(url)
+        r = requests.get(url, headers=headers)
 
         if r.status_code != 200:
             msg = f"HTTP {r.status_code} for {url}"
@@ -44,6 +50,11 @@ def main():
         # download step
         if media_path := extract_media_path(patterns, r.text):
             cmd = ["wget", media_path, "-O", f"'{title}.mp3'"]
+
+            # temporarily use env var until argparse is implemented
+            if USER_AGENT:
+                cmd.extend(["-U", USER_AGENT])
+
             subprocess.run(cmd)
         else:
             print(f"No media URL found in {url}")
