@@ -12,6 +12,7 @@ $ rss2sh.py  https://some.url.com/listing.rss
 import sys
 import datetime
 import warnings
+import argparse
 
 import feedparser
 
@@ -63,11 +64,26 @@ def get_timestamp(entry):
     return d.strftime("%Y%m%d-%H%M")
 
 
-if __name__ == "__main__":
-    # TODO: assume only 1 URL required
-    url = sys.argv[1]
-    feed = feedparser.parse(url)
+def parse_command_line():
+    # TODO: add custom user agent option
+    # TODO: add numerical limit option (e.g. top N feed entries)
+    desc = """%(prog)s downloads &converts RSS feeds to wget download scripts."""
+
+    parser = argparse.ArgumentParser(description=desc)
+    parser.add_argument("-v", "--verbose", default=True,
+                        help="Display runtime messages.")
+    parser.add_argument("url", help="Feed URL")
+    return parser.parse_args()
+
+
+def main():
+    args = parse_command_line()
+    feed = feedparser.parse(args.url)
 
     for ent in feed.entries:
         raw_url = extract_url(ent)
         print(format_entry(ent, raw_url))
+
+
+if __name__ == "__main__":
+    main()
