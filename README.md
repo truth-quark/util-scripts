@@ -1,6 +1,8 @@
 # Util-scripts
 
-Dumping ground for utility scripts, potentially one off code, or even junk code that might be worth keeping...
+Dumping ground for utility scripts, typically utilities that are not one offs.
+
+One off & junk code should be stored in other repositories.
 
 ## mp3tag
 
@@ -11,3 +13,8 @@ Dedicated tagging tools may be better for fixing larger media collections.
 NB: some vehicle stereo systems arrange content in **filesystem** order. This
 can result in media displaying out of order. Use `fatsort -n` to arrange files in
 natural order on storage media.
+
+## rss2sh
+
+`rss2sh` is a convenience script for downloading local copies of podcasts. It
+converts RSS feed URLs to shell scripts calling `wget`.
