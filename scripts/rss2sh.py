@@ -20,6 +20,7 @@ import feedparser
 #       wget, requests, yt-dlp???
 
 MEDIA_TYPES = ("audio/mpeg", )
+MP3_EXT = ".mp3"
 
 
 def extract_url(e):
@@ -31,16 +32,16 @@ def extract_url(e):
         raw_url = item.href
         media_type = item.type
 
-        if media_type not in MEDIA_TYPES:
-            msg = "Warning: media type '{media type}' not in {MEDIA_TYPES}"
-            warnings.warn(msg)
-
-        # TODO: possibly add better error handling
-        if ".mp3" in raw_url:
+        if MP3_EXT in raw_url:
             break
-        else:
-            msg = f"Warning: no '.mp3' in media URL not in {raw_url}"
-            warnings.warn(msg)
+
+    if media_type not in MEDIA_TYPES:
+        msg = "Warning: media type '{media type}' not in {MEDIA_TYPES}"
+        warnings.warn(msg)
+
+    if MP3_EXT not in raw_url:
+        msg = f"Warning: {MP3_EXT} not found in media URL: {raw_url}"
+        warnings.warn(msg)
 
     return raw_url
 
