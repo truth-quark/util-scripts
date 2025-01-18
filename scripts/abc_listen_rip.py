@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import warnings
 import subprocess
 import requests
 
@@ -36,7 +37,7 @@ def main():
 
         if r.status_code != 200:
             msg = f"HTTP {r.status_code} for {url}"
-            print(msg)
+            warnings.warn(msg)
             continue
 
         if match_title := re.search(title_pattern, r.text):
@@ -44,7 +45,7 @@ def main():
             title, _, _ = raw_title.partition(" - ")
             print(f"title={title}")
         else:
-            print(f"No title found in HTML, skipping {url}")
+            warnings.warn(f"No title found in HTML, skipping {url}")
             continue
 
         # download step
@@ -57,7 +58,7 @@ def main():
 
             subprocess.run(cmd)
         else:
-            print(f"No media URL found in {url}")
+            warnings.warn(f"No media URL found in {url}")
             continue
 
 
