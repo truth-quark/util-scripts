@@ -50,12 +50,13 @@ def clean_url(raw_url):
     return url
 
 
-def format_entry(e, url):
+def format_entry(e, url, user_agent=None):
     """
-    Returns a formatted 'wget' download command string.
+    Returns formatted 'wget' download command string.
     """
     timestamp = get_timestamp(e)
-    return f"wget {url} -O '{timestamp}-{e.title}.mp3'"
+    ua = f"-U '{user_agent}'" if user_agent else ""
+    return f"wget {ua} -O '{timestamp}-{e.title}.mp3' {url}"
 
 
 def get_timestamp(entry):
@@ -74,6 +75,9 @@ def parse_command_line():
                         action="store_true",
                         help="Retain query in any RSS entry URL.")
 
+    parser.add_argument("-u", "--user-agent",
+                        help="User agent string for download script.")
+
     parser.add_argument("-v", "--verbose",
                         default=False,
                         action="store_true",
@@ -90,7 +94,7 @@ def main():
     for ent in feed.entries:
         raw_url = extract_url(ent)
         url = raw_url if args.keep_url_query else clean_url(raw_url)
-        print(format_entry(ent, url))
+        print(format_entry(ent, url, args.user_agent))
 
 
 if __name__ == "__main__":
