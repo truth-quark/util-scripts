@@ -70,9 +70,12 @@ def parse_command_line():
     desc = """%(prog)s downloads &converts RSS feeds to wget download scripts."""
 
     parser = argparse.ArgumentParser(description=desc)
-    parser.add_argument("-v", "--verbose", default=True,
-                        help="Display runtime messages.")
-    parser.add_argument("url", help="Feed URL")
+    parser.add_argument("-v", "--verbose",
+                        default=False,
+                        action="store_true",
+                        help="Display runtime information.")
+
+    parser.add_argument("url", help="Feed URL to download & convert.")
     return parser.parse_args()
 
 
