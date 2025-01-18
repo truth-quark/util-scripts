@@ -6,7 +6,7 @@ import subprocess
 import requests
 
 # TODO: use argparse?
-# TODO: should the HTML be saved & cached? Does a lib exist for this?
+# TODO: should HTML be saved?
 # TODO: add option to create wget script?
 
 # Media file patterns can be:
@@ -43,7 +43,6 @@ def main():
         if match_title := re.search(title_pattern, r.text):
             raw_title = match_title.group(1)
             title, _, _ = raw_title.partition(" - ")
-            print(f"title={title}")
         else:
             warnings.warn(f"No title found in HTML, skipping {url}")
             continue
