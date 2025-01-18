@@ -7,9 +7,6 @@ import requests
 # TODO: should the HTML be saved & cached? Does a lib exist for this?
 # TODO: add option to create wget script?
 
-
-urls = sys.argv[1:]
-
 # Media file patterns can be:
 # https://abcmedia.akamaized.net/something/some_podcast/name-2021-10-4-descriptor.mp3
 # https://abcmedia.akamaized.net/rn/podcast/2022/02/eot_20220207.mp3
@@ -25,26 +22,33 @@ def extract_media_path(re_patterns, text):
             return match.group()
 
 
-for url in urls:
-    r = requests.get(url)
+def main():
+    urls = sys.argv[1:]
 
-    if r.status_code != 200:
-        msg = f"HTTP {r.status_code} for {url}"
-        print(msg)
-        continue
+    for url in urls:
+        r = requests.get(url)
 
-    if match_title := re.search(title_pattern, r.text):
-        raw_title = match_title.group(1)
-        title, _, _ = raw_title.partition(" - ")
-        print(f"title={title}")
-    else:
-        print(f"No title found in HTML, skipping {url}")
-        continue
+        if r.status_code != 200:
+            msg = f"HTTP {r.status_code} for {url}"
+            print(msg)
+            continue
 
-    # download step
-    if media_path := extract_media_path(patterns, r.text):
-        cmd = ["wget", media_path, "-O", f"{title}.mp3"]
-        subprocess.run(cmd)
-    else:
-        print(f"No media URL found in {url}")
-        continue
+        if match_title := re.search(title_pattern, r.text):
+            raw_title = match_title.group(1)
+            title, _, _ = raw_title.partition(" - ")
+            print(f"title={title}")
+        else:
+            print(f"No title found in HTML, skipping {url}")
+            continue
+
+        # download step
+        if media_path := extract_media_path(patterns, r.text):
+            cmd = ["wget", media_path, "-O", f"{title}.mp3"]
+            subprocess.run(cmd)
+        else:
+            print(f"No media URL found in {url}")
+            continue
+
+
+if __name__ == "__main__":
+    main()
