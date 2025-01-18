@@ -55,8 +55,8 @@ def format_entry(e, url, user_agent=None):
     Returns formatted 'wget' download command string.
     """
     timestamp = get_timestamp(e)
-    ua = f"-U '{user_agent}'" if user_agent else ""
-    return f"wget {ua} -O '{timestamp}-{e.title}.mp3' {url}"
+    ua = f" -U '{user_agent}'" if user_agent else ""
+    return f"wget{ua} -O '{timestamp}-{e.title}.mp3' {url}"
 
 
 def get_timestamp(entry):
@@ -65,8 +65,6 @@ def get_timestamp(entry):
 
 
 def parse_command_line():
-    # TODO: add custom user agent option
-    # TODO: add numerical limit option (e.g. top N feed entries)
     desc = """%(prog)s downloads &converts RSS feeds to wget download scripts."""
 
     parser = argparse.ArgumentParser(description=desc)
