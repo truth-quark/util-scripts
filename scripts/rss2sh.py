@@ -46,7 +46,6 @@ def extract_url(e):
 
 
 def clean_url(raw_url):
-    # TODO: make arg trimming optional
     url = raw_url.partition("?")[0]  # trim tracking args
     return url
 
@@ -70,6 +69,11 @@ def parse_command_line():
     desc = """%(prog)s downloads &converts RSS feeds to wget download scripts."""
 
     parser = argparse.ArgumentParser(description=desc)
+    parser.add_argument("-k", "--keep-url-query",
+                        default=False,
+                        action="store_true",
+                        help="Retain query in any RSS entry URL.")
+
     parser.add_argument("-v", "--verbose",
                         default=False,
                         action="store_true",
@@ -85,7 +89,8 @@ def main():
 
     for ent in feed.entries:
         raw_url = extract_url(ent)
-        print(format_entry(ent, raw_url))
+        url = raw_url if args.keep_url_query else clean_url(raw_url)
+        print(format_entry(ent, url))
 
 
 if __name__ == "__main__":
