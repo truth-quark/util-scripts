@@ -47,7 +47,7 @@ def extract_url(e):
 
 
 def clean_url(raw_url):
-    url = raw_url.partition("?")[0]  # trim tracking args
+    url = raw_url.partition("?")[0]  # trim URL query (often tracking args)
     return url
 
 
@@ -66,7 +66,9 @@ def get_timestamp(entry):
 
 
 def parse_command_line():
-    desc = """%(prog)s downloads &converts RSS feeds to wget download scripts."""
+    desc = """%(prog)s downloads & converts RSS feeds to wget download scripts.
+                The utility is debliberately minimal, relying on > redirects to
+                output to a script file & 'head' to reduce the entry count."""
 
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument("-k", "--keep-url-query",
