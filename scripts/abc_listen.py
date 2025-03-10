@@ -61,7 +61,7 @@ def main():
 
         # download step
         if media_path := extract_media_path(patterns, r.text):
-            cmd = ["wget", media_path, "-O", f"'{title}.mp3'"]
+            cmd = ["wget", media_path, "-O", f"\"{title}.mp3\""]
 
             # temporarily use env var until argparse is implemented
             if USER_AGENT:
