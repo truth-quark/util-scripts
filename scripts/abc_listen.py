@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import html
 import warnings
 import subprocess
 import requests
@@ -28,6 +29,16 @@ def extract_media_path(re_patterns, text):
             return match.group()
 
 
+# FIXME: clean up escaping & quote chars from title
+def clean_title(title):
+    raw_title = html.unescape(title)
+
+    for c in ("'", '"', "?"):
+        raw_title = raw_title.replace(c, "")
+
+    return raw_title
+
+
 def main():
     urls = sys.argv[1:]
     headers = {'user-agent': USER_AGENT} if USER_AGENT else None
@@ -43,6 +54,7 @@ def main():
         if match_title := re.search(title_pattern, r.text):
             raw_title = match_title.group(1)
             title, _, _ = raw_title.partition(" - ")
+            title = clean_title(title)
         else:
             warnings.warn(f"No title found in HTML, skipping {url}")
             continue
