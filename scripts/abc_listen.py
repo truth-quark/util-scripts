@@ -35,8 +35,13 @@ def extract_media_path(re_patterns, text):
 def clean_title(title):
     raw_title = html.unescape(title)
 
-    for c in ("'", '"', "?"):
+    for c in ("'", '"', "?", ":"):
         raw_title = raw_title.replace(c, "")
+
+    abc_listen_suffix = " - ABC listen"
+
+    if raw_title.endswith(abc_listen_suffix):
+        raw_title = raw_title.replace(abc_listen_suffix, "")
 
     return raw_title
 
