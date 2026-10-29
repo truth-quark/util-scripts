@@ -16,7 +16,7 @@ import requests
 patterns = [r"https://mediacore-live-production.akamaized.net/audio/../../Z/..[.]mp3",
             r"http[s]{0,1}://abcmedia.akamaized.net/[\S]+[.]mp3"]
 
-title_pattern = r"<title>(?P<title>.+)</title>"
+title_pattern = r"""<title data-next-head="">(?P<title>.+)</title>"""
 
 
 USER_AGENT_KEY = "USER_AGENT"
