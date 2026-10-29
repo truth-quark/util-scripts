@@ -68,12 +68,13 @@ def main():
 
         # download step
         if media_path := extract_media_path(patterns, r.text):
-            cmd = ["wget", media_path, "-O", f"\"{title}.mp3\""]
+            cmd = ["wget", "-O", f"{title}.mp3", media_path]
 
             # temporarily use env var until argparse is implemented
             if USER_AGENT:
                 cmd.extend(["-U", USER_AGENT])
 
+            # automatically handles quoting
             subprocess.run(cmd)
         else:
             warnings.warn(f"No media URL found in {url}")
