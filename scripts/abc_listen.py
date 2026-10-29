@@ -4,6 +4,8 @@ import sys
 import html
 import warnings
 import subprocess
+
+from bs4 import BeautifulSoup
 import requests
 
 # TODO: use argparse?
@@ -51,13 +53,13 @@ def main():
             warnings.warn(msg)
             continue
 
-        if match_title := re.search(title_pattern, r.text):
-            raw_title = match_title.group(1)
-            title, _, _ = raw_title.partition(" - ")
-            title = clean_title(title)
-        else:
+        soup = BeautifulSoup(r.text)
+
+        if soup.title is None:
             warnings.warn(f"No title found in HTML, skipping {url}")
             continue
+
+        title = clean_title(soup.title.string)
 
         # download step
         if media_path := extract_media_path(patterns, r.text):
