@@ -9,9 +9,8 @@ import requests
 
 # TODO: use argparse?
 # TODO: should HTML be saved?
-# TODO: add option to create wget script?
 
-# Media file patterns can be:
+# ABC Media file patterns can be:
 # https://abcmedia.akamaized.net/something/some_podcast/name-2021-10-4-descriptor.mp3
 # https://abcmedia.akamaized.net/rn/podcast/2022/02/eot_20220207.mp3
 patterns = [r"https://mediacore-live-production.akamaized.net/audio/../../Z/..[.]mp3",
@@ -30,7 +29,6 @@ def extract_media_urls(re_patterns, text):
             return match.group()
 
 
-# FIXME: clean up escaping & quote chars from title
 def clean_title(title):
     raw_title = html.unescape(title)
 
