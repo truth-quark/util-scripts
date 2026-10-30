@@ -3,7 +3,6 @@ import re
 import sys
 import html
 import warnings
-import subprocess
 
 from bs4 import BeautifulSoup
 import requests
@@ -68,14 +67,16 @@ def main():
 
         # download step
         if media_path := extract_media_path(patterns, r.text):
-            cmd = ["wget", "-O", f"{title}.mp3", media_path]
+            resp = requests.get(media_path, headers=headers, stream=True)
 
-            # temporarily use env var until argparse is implemented
-            if USER_AGENT:
-                cmd.extend(["-U", USER_AGENT])
+            if resp.status_code != 200:
+                msg = f"HTTP {resp.status_code} for {media_path}, Skipping..."
+                warnings.warn(msg)
+                continue
 
-            # automatically handles quoting
-            subprocess.run(cmd)
+            with open(f"{title}.mp3", "wb") as dest:
+                for chunk in resp.iter_content(chunk_size=8192):
+                    dest.write(chunk)
         else:
             warnings.warn(f"No media URL found in {url}")
             continue
