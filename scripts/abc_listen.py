@@ -58,7 +58,7 @@ def main():
             warnings.warn(msg)
             continue
 
-        soup = BeautifulSoup(r.text)
+        soup = BeautifulSoup(r.text, "html.parser")
 
         if soup.title is None:
             warnings.warn(f"No title found in HTML, skipping {url}")
