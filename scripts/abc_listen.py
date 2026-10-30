@@ -24,7 +24,7 @@ USER_AGENT_KEY = "USER_AGENT"
 USER_AGENT = os.environ.get(USER_AGENT_KEY)
 
 
-def extract_media_path(re_patterns, text):
+def extract_media_urls(re_patterns, text):
     for pattern in re_patterns:
         if match := re.search(pattern, text):
             return match.group()
@@ -66,11 +66,11 @@ def main():
         title = clean_title(soup.title.string)
 
         # download step
-        if media_path := extract_media_path(patterns, r.text):
-            resp = requests.get(media_path, headers=headers, stream=True)
+        if media_url := extract_media_urls(patterns, r.text):
+            resp = requests.get(media_url, headers=headers, stream=True)
 
             if resp.status_code != 200:
-                msg = f"HTTP {resp.status_code} for {media_path}, Skipping..."
+                msg = f"HTTP {resp.status_code} for {media_url}, Skipping..."
                 warnings.warn(msg)
                 continue
 
