@@ -40,7 +40,7 @@ def clean_title(title):
     if raw_title.endswith(abc_listen_suffix):
         raw_title = raw_title.replace(abc_listen_suffix, "")
 
-    return raw_title
+    return raw_title.strip()
 
 
 def main():
